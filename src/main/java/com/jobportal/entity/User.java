@@ -15,7 +15,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "user")
 public class User {
     @Id
-    private String id;
+    private Long id;
     private String name;
     @Indexed(unique = true) //email will be unique there will be no duplicate
     private String email;
