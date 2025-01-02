@@ -12,6 +12,8 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
 
+import java.security.SecureRandom;
+
 @Component
 public class Utilities {
     //static feild in case of that auto wired and field injection will not work ony setter injection
@@ -29,8 +31,19 @@ public class Utilities {
         return sequence.getSeq();
     }
 
+    public static String generateOtp() {
+        StringBuilder otp = new StringBuilder();
+        SecureRandom random = new SecureRandom();
+        for(int i = 0; i < 6; i++) {
+            otp.append(random.nextInt(10));
+        }
+        return otp.toString();
+    }
+
     @Autowired
     public void setMongoOperations(MongoOperations mongoOperations) {
         Utilities.mongoOperations = mongoOperations;
     }
+
+
 }
