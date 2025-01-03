@@ -2,7 +2,7 @@ package com.jobportal.utility;
 
 public class Data {
 
-    public static String getMessageOtp(String otp) {
+    public static String getMessageOtp(String otp,String name) {
         String emailTemplate = """
                 <!DOCTYPE html>
                 <html lang="en">
@@ -62,11 +62,11 @@ public class Data {
                             <h1>Your OTP Code</h1>
                         </div>
                         <div class="email-body">
-                            <p>Dear <strong>%s</strong>,</p>
+                            <p>Dear <strong>name</strong>,</p>
                             <p>We received a request to verify your email address. Use the OTP below to complete the process:</p>
                             <div class="otp-box">%s</div>
                             <p>If you didn’t request this, please ignore this email or contact support if you have any concerns.</p>
-                            <p>Thank you,<br>Team %s</p>
+                            <p>Thank you,<br>Name %s</p>
                         </div>
                         <div class="email-footer">
                             &copy; %s %s. All rights reserved.

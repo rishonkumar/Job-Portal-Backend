@@ -22,7 +22,9 @@ public class User {
     private String password;
     private AccountType accountType;
 
+    private Long profileId;
+
     public UserDto toUserDto() {
-        return new UserDto(this.id,this.name,this.email,this.password,this.accountType);
+        return new UserDto(this.id,this.name,this.email,this.password,this.accountType,this.profileId);
     }
 }

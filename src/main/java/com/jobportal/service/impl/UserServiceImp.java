@@ -7,7 +7,9 @@ import com.jobportal.entity.User;
 import com.jobportal.exception.JobPortalException;
 import com.jobportal.reposistory.OTPRepository;
 import com.jobportal.reposistory.UserRepository;
+import com.jobportal.service.ProfileService;
 import com.jobportal.service.UserService;
+import com.jobportal.utility.Data;
 import com.jobportal.utility.Utilities;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,12 +36,16 @@ public class UserServiceImp implements UserService {
     @Autowired
     private JavaMailSender mailSender;
 
+    @Autowired
+    private ProfileService profileService;
     @Override
     public UserDto registerUser(UserDto userDto) throws JobPortalException {
         Optional<User> isUserEmailPresent = userRepository.findByEmail(userDto.getEmail());
         if (isUserEmailPresent.isPresent()) {
             throw new JobPortalException("USER_FOUND");
         }
+        //create the profile when registering the User
+        userDto.setProfileId(profileService.createProfile(userDto.getEmail()));
         userDto.setId(Utilities.getNextSequence("users"));
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
         User user = userDto.toUserEntity();
@@ -57,6 +63,7 @@ public class UserServiceImp implements UserService {
 
     @Override
     public Boolean sendOtp(String email) throws Exception {
+        User user = userRepository.findByEmail(email).orElseThrow(()-> new JobPortalException("USER_NOT_FOUND"));
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper message = new MimeMessageHelper(mimeMessage,true);
         message.setTo(email);
@@ -64,7 +71,7 @@ public class UserServiceImp implements UserService {
         String generateOtp = Utilities.generateOtp();
         OTP otp = new OTP(email,generateOtp, LocalDateTime.now());
         otpRepository.save(otp);
-        message.setText(" " + generateOtp, false);
+        message.setText(Data.getMessageOtp(generateOtp,user.getName()),true);
         mailSender.send(mimeMessage);
         return true;
     }
